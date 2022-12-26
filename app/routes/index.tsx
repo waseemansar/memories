@@ -21,7 +21,7 @@ const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/web
 
 export default function Index() {
     return (
-        <main className="grid grid-cols-5 gap-3">
+        <main className="grid grid-cols-5 gap-3 px-4">
             <div className="col-span-5 sm:col-span-3 2xl:col-span-4">
                 <PostsGrid />
             </div>

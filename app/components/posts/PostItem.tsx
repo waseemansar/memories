@@ -1,5 +1,7 @@
 import type { Post } from "@prisma/client";
 import { useFetcher } from "@remix-run/react";
+import { AiFillLike } from "react-icons/ai";
+import { FaTrash } from "react-icons/fa";
 import moment from "moment";
 
 type PostItemProps = {
@@ -47,11 +49,11 @@ export default function PostItem({ post }: PostItemProps) {
                 <h2 className="h-14 flex items-center text-black text-2xl font-semibold my-4">{post.title}</h2>
                 <p className="line-clamp-2 text-gray-500 text-md">{post.message}</p>
                 <div className="flex items-center justify-between mt-4">
-                    <button onClick={likePostHandler} className="text-primary uppercase">
-                        <i className="fa fa-thumbs-up"></i> Like{post.likeCount}
+                    <button onClick={likePostHandler} className="flex items-center gap-x-1 text-primary uppercase">
+                        <AiFillLike /> Like{post.likeCount}
                     </button>
-                    <button onClick={deletePostHandler} className="text-primary uppercase">
-                        <i className="fa-sharp fa-solid fa-trash"></i> Delete
+                    <button onClick={deletePostHandler} className="flex items-center gap-x-1 text-primary uppercase">
+                        <FaTrash /> Delete
                     </button>
                 </div>
             </div>
