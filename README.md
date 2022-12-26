@@ -1,6 +1,6 @@
 ## Memories App
 
-This app is created using Remix and MongoDB to store your memories, also used Prisma ORM.
+This app is created using Remix, Tailwind CSS and MongoDB to store your memories, also used Prisma ORM.
 
 Following are the models:
 
