@@ -12,6 +12,7 @@ model User {
     name      String
     email     String   @unique()
     password  String
+    posts     Post[]
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
@@ -22,12 +23,13 @@ model Post {
     id           String   @id @default(auto()) @map("_id") @db.ObjectId
     title        String
     message      String
-    creator      String
     tags         String[]
     selectedFile String
     likeCount    Int      @default(0)
     createdAt    DateTime @default(now())
     updatedAt    DateTime @updatedAt
+    creator      User     @relation(fields: [creatorId], references: [id])
+    creatorId    String   @db.ObjectId
 
     @@map("posts")
 }
