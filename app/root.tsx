@@ -1,8 +1,9 @@
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from "@remix-run/react";
 
 import tailwindStyles from "~/styles/tailwind.css";
 import Navigation from "~/components/ui/Navigation";
+import { getUserFromSession } from "./utils/session.server";
 
 export const meta: MetaFunction = () => ({
     charset: "utf-8",
@@ -29,5 +30,9 @@ export default function App() {
         </html>
     );
 }
+
+export const loader: LoaderFunction = async ({ request }) => {
+    return getUserFromSession(request);
+};
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: tailwindStyles }];

@@ -16,7 +16,7 @@ const PostForm = () => {
                         className="border w-full px-2 py-3 rounded-md focus:outline-primary"
                         type="text"
                         name="creator"
-                        placeholder="Creator"
+                        placeholder="Creator *"
                     />
                     <ErrorMessage message={data?.errors?.creator} />
                 </div>
@@ -25,7 +25,7 @@ const PostForm = () => {
                         className="border w-full px-2 py-3 rounded-md focus:outline-primary"
                         type="text"
                         name="title"
-                        placeholder="Title"
+                        placeholder="Title *"
                     />
                     <ErrorMessage message={data?.errors?.title} />
                 </div>
@@ -33,7 +33,7 @@ const PostForm = () => {
                     <textarea
                         className="border w-full px-2 py-3 rounded-md focus:outline-primary resize-none"
                         name="message"
-                        placeholder="Message"
+                        placeholder="Message *"
                         rows={3}
                     ></textarea>
                     <ErrorMessage message={data?.errors?.message} />
@@ -43,7 +43,7 @@ const PostForm = () => {
                         className="border w-full px-2 py-3 rounded-md focus:outline-primary"
                         type="text"
                         name="tags"
-                        placeholder="Tags (, seperated)"
+                        placeholder="Tags (, seperated) *"
                     />
                     <ErrorMessage message={data?.errors?.tags} />
                 </div>
