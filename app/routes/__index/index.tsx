@@ -25,11 +25,11 @@ export default function Index() {
     const data = useLoaderData<typeof loader>();
 
     return (
-        <main className="grid grid-cols-5 gap-3 px-4">
-            <div className="col-span-5 sm:col-span-3 2xl:col-span-4">
+        <main className="grid grid-cols-7 gap-3 px-4">
+            <div className="col-span-7 order-2 sm:col-span-5 sm:order-1 2xl:col-span-5">
                 <PostsGrid />
             </div>
-            <div className="col-span-5 sm:col-span-2 2xl:col-span-1">
+            <div className="col-span-7 order-1 sm:col-span-2 sm:order-2 2xl:col-span-2">
                 {data.user ? (
                     <PostForm />
                 ) : (
