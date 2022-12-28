@@ -1,5 +1,6 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 import type { User } from "@prisma/client";
+import type { SessionUser } from "~/types/users";
 
 const sessionStorage = createCookieSessionStorage({
     cookie: {
@@ -10,12 +11,6 @@ const sessionStorage = createCookieSessionStorage({
         httpOnly: true, // toensure client side JS code cannot access this cookie
     },
 });
-
-export type SessionUser = {
-    id: string;
-    name: string;
-    email: string;
-};
 
 export async function createUserSession(user: User, redirectPath: string) {
     const { id, name, email } = user;

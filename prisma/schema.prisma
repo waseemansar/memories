@@ -25,7 +25,7 @@ model Post {
     message      String
     tags         String[]
     selectedFile String
-    likeCount    Int      @default(0)
+    likes        String[] @default([])
     createdAt    DateTime @default(now())
     updatedAt    DateTime @updatedAt
     creator      User     @relation(fields: [creatorId], references: [id])

@@ -61,13 +61,17 @@ const schema = z.object({
 type ActionInput = z.TypeOf<typeof schema>;
 
 export const action: ActionFunction = async ({ request }) => {
+    const user = await getUserFromSession(request);
+
     if (request.method === "PATCH") {
         const formData = await request.formData();
         const postId = formData.get("postId");
+        const userId = user?.id;
 
+        invariant(typeof userId === "string", "User id is required");
         invariant(typeof postId === "string", "Post id must be a string");
 
-        await likePost(postId);
+        await likePost(postId, userId);
     } else if (request.method === "DELETE") {
         const formData = await request.formData();
         const postId = formData.get("postId");
@@ -95,7 +99,6 @@ export const action: ActionFunction = async ({ request }) => {
         const message = formData.get("message");
         const tags = formData.get("tags");
         const selectedFile = formData.get("selectedFile") as File;
-        const user = await getUserFromSession(request);
         const creatorId = user?.id;
 
         invariant(typeof creatorId === "string", "Creator is required");
