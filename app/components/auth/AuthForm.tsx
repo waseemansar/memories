@@ -1,6 +1,6 @@
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
 import { FaGoogle, FaLock, FaUserPlus } from "react-icons/fa";
-import type { action } from "~/routes/auth";
+import type { action } from "~/routes/__index/auth";
 
 import ErrorMessage from "../ui/ErrorMessage";
 

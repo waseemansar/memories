@@ -14,30 +14,41 @@ import PostForm from "~/components/posts/PostForm";
 import PostsGrid from "~/components/posts/Posts";
 import { createPost, deletePost, getPosts, likePost } from "~/utils/posts.server";
 import { validateAction } from "~/utils/validation.server";
+import { getUserFromSession } from "~/utils/session.server";
+import { useLoaderData } from "@remix-run/react";
 
 const UPLOAD_DIRECTORY = "uploads";
 const MAX_FILE_SIZE = 300000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 export default function Index() {
+    const data = useLoaderData<typeof loader>();
+
     return (
         <main className="grid grid-cols-5 gap-3 px-4">
             <div className="col-span-5 sm:col-span-3 2xl:col-span-4">
                 <PostsGrid />
             </div>
             <div className="col-span-5 sm:col-span-2 2xl:col-span-1">
-                <PostForm />
+                {data.user ? (
+                    <PostForm />
+                ) : (
+                    <div className="bg-white shadow-md rounded-md p-4">
+                        <p>Please sign in to create your own memories and like other's memories.</p>
+                    </div>
+                )}
             </div>
         </main>
     );
 }
 
-export const loader: LoaderFunction = () => {
-    return getPosts();
+export const loader: LoaderFunction = async ({ request }) => {
+    const user = await getUserFromSession(request);
+    const posts = await getPosts();
+    return { posts, user };
 };
 
 const schema = z.object({
-    creator: z.string().min(1, { message: "Creator is required" }),
     title: z.string().min(1, { message: "Title is required" }),
     message: z.string().min(1, { message: "Message is required" }),
     tags: z.string().regex(/([^,]+)/, { message: "Tags should be comma seprated" }),
@@ -80,19 +91,20 @@ export const action: ActionFunction = async ({ request }) => {
         );
 
         const formData = await unstable_parseMultipartFormData(request, uploadHandler);
-        const creator = formData.get("creator");
         const title = formData.get("title");
         const message = formData.get("message");
         const tags = formData.get("tags");
         const selectedFile = formData.get("selectedFile") as File;
+        const user = await getUserFromSession(request);
+        const creatorId = user?.id;
 
-        invariant(typeof creator === "string", "Creator must be a string");
+        invariant(typeof creatorId === "string", "Creator is required");
         invariant(typeof title === "string", "Title must be a string");
         invariant(typeof message === "string", "Message must be a string");
         invariant(typeof tags === "string", "Tags must be a string");
 
         const uploadedFile = `/${UPLOAD_DIRECTORY}/${selectedFile.name}`;
-        await createPost(creator, title, message, tags, uploadedFile);
+        await createPost(creatorId, title, message, tags, uploadedFile);
     }
 
     return redirect("/");

@@ -2,15 +2,15 @@ import { prisma } from "./database.server";
 import { removeImage } from "./file.server";
 import { cleanTags } from "./helpers.server";
 
-export async function createPost(creator: string, title: string, message: string, tags: string, selectedFile: string) {
+export async function createPost(creatorId: string, title: string, message: string, tags: string, selectedFile: string) {
     try {
         await prisma.post.create({
             data: {
-                creator,
                 title,
                 message,
                 tags: cleanTags(tags),
                 selectedFile,
+                creator: { connect: { id: creatorId } },
             },
         });
     } catch (error) {

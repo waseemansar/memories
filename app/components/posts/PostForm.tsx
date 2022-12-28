@@ -1,5 +1,5 @@
 import { Form, useActionData, useTransition as useNavigation } from "@remix-run/react";
-import type { action } from "~/routes";
+import type { action } from "~/routes/__index/index";
 import ErrorMessage from "../ui/ErrorMessage";
 
 const PostForm = () => {
@@ -11,15 +11,6 @@ const PostForm = () => {
         <div className="bg-white shadow-md rounded-md p-4">
             <h2 className="text-center text-lg font-semibold mb-4">Creating a Memory</h2>
             <Form method="post" encType="multipart/form-data">
-                <div className="mb-4">
-                    <input
-                        className="border w-full px-2 py-3 rounded-md focus:outline-primary"
-                        type="text"
-                        name="creator"
-                        placeholder="Creator *"
-                    />
-                    <ErrorMessage message={data?.errors?.creator} />
-                </div>
                 <div className="mb-4">
                     <input
                         className="border w-full px-2 py-3 rounded-md focus:outline-primary"

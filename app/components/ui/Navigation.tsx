@@ -1,5 +1,5 @@
 import { Form, Link, useLoaderData } from "@remix-run/react";
-import type { loader } from "~/root";
+import type { loader } from "~/routes/__index";
 
 const Navigation = () => {
     const user = useLoaderData<typeof loader>();
@@ -11,14 +11,20 @@ const Navigation = () => {
                 <img className="w-6 h-6 md:w-8 md:h-8" src="/images/memories.png" alt="Memories Logo" />
             </Link>
             {user ? (
-                <Form method="post" action="/logout">
-                    <button
-                        type="submit"
-                        className="w-20 md:w-28 py-1 md:py-2 text-sm md:text-base bg-rose-500 text-white text-center uppercase rounded-md"
-                    >
-                        Log Out
-                    </button>
-                </Form>
+                <div className="flex items-center gap-x-4">
+                    <div className="w-8 h-8 flex items-center justify-center bg-primary rounded-full text-white font-bold">
+                        {user.name.charAt(0)}
+                    </div>
+                    <p>{user.name}</p>
+                    <Form method="post" action="/logout">
+                        <button
+                            type="submit"
+                            className="w-20 md:w-28 py-1 md:py-2 text-sm md:text-base bg-rose-500 text-white text-center uppercase rounded-md"
+                        >
+                            Log Out
+                        </button>
+                    </Form>
+                </div>
             ) : (
                 <Link
                     to="/auth"
