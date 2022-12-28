@@ -5,6 +5,7 @@ This app is created using Remix, Tailwind CSS and MongoDB to store your memories
 Following are the models:
 
 -   Post
+-   User
 
 ## Usage
 
