@@ -16,6 +16,7 @@ export async function createPost(creatorId: string, title: string, message: stri
             },
         });
     } catch (error) {
+        removeImage(selectedFile);
         throw new CustomError("Failed to add post.", 500);
     }
 }

@@ -16,6 +16,7 @@ import { validateAction } from "~/utils/validation.server";
 import { getUserFromSession } from "~/utils/session.server";
 import { postSchema } from "~/utils/schema.server";
 import type { PostActionInput } from "~/utils/schema.server";
+import { CustomError } from "~/utils/errors";
 
 const UPLOAD_DIRECTORY = "uploads";
 
@@ -33,7 +34,14 @@ export default function Index() {
 }
 
 export const loader: LoaderFunction = async () => {
-    return await getPosts();
+    try {
+        const posts = await getPosts();
+        return json({ posts });
+    } catch (error) {
+        if (error instanceof CustomError) {
+            return json({ errors: { error: error.message } });
+        }
+    }
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -47,14 +55,26 @@ export const action: ActionFunction = async ({ request }) => {
         invariant(typeof userId === "string", "User id is required");
         invariant(typeof postId === "string", "Post id must be a string");
 
-        await likePost(postId, userId);
+        try {
+            await likePost(postId, userId);
+        } catch (error) {
+            if (error instanceof CustomError) {
+                return json({ errors: { error: error.message } });
+            }
+        }
     } else if (request.method === "DELETE") {
         const formData = await request.formData();
         const postId = formData.get("postId");
 
         invariant(typeof postId === "string", "Post id must be a string");
 
-        await deletePost(postId);
+        try {
+            await deletePost(postId);
+        } catch (error) {
+            if (error instanceof CustomError) {
+                return json({ errors: { error: error.message } });
+            }
+        }
     } else if (request.method === "POST") {
         const cloneRequest = request.clone();
         const { errors } = await validateAction<PostActionInput>({ request: cloneRequest, schema: postSchema });
@@ -82,8 +102,14 @@ export const action: ActionFunction = async ({ request }) => {
         invariant(typeof message === "string", "Message must be a string");
         invariant(typeof tags === "string", "Tags must be a string");
 
-        const uploadedFile = `/${UPLOAD_DIRECTORY}/${selectedFile.name}`;
-        await createPost(creatorId, title, message, tags, uploadedFile);
+        try {
+            const uploadedFile = `/${UPLOAD_DIRECTORY}/${selectedFile.name}`;
+            await createPost(creatorId, title, message, tags, uploadedFile);
+        } catch (error) {
+            if (error instanceof CustomError) {
+                return json({ errors: { error: error.message } });
+            }
+        }
     }
 
     return redirect("/");

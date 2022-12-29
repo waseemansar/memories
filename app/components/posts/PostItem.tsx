@@ -3,6 +3,7 @@ import { AiOutlineLike, AiFillLike } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa";
 import moment from "moment";
 import type { PostWithCreator } from "~/types/posts";
+import { useEffect } from "react";
 
 type PostItemProps = {
     post: PostWithCreator;
@@ -17,6 +18,12 @@ export default function PostItem({ post }: PostItemProps) {
         const formatedTags = post.tags.map((tag) => "#" + tag);
         return formatedTags.join(" ");
     };
+
+    useEffect(() => {
+        if (fetcher.type === "done" && fetcher.data?.errors?.error) {
+            alert(fetcher.data?.errors?.error);
+        }
+    }, [fetcher]);
 
     const likePostHandler = () => {
         fetcher.submit(

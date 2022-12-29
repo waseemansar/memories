@@ -15,6 +15,11 @@ const PostForm = () => {
             {user ? (
                 <>
                     <h2 className="text-center text-lg font-semibold mb-4">Creating a Memory</h2>
+                    {data?.errors?.error && (
+                        <div className="flex justify-center mb-4">
+                            <ErrorMessage message={data?.errors?.error} />
+                        </div>
+                    )}
                     <Form method="post" encType="multipart/form-data">
                         <div className="mb-4">
                             <input
