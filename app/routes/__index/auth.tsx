@@ -1,12 +1,13 @@
 import { json, redirect } from "@remix-run/node";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
-import { z } from "zod";
 
 import AuthForm from "~/components/auth/AuthForm";
 import { validateAction } from "~/utils/validation.server";
 import { signin, signup } from "~/utils/auth.server";
 import { CustomError } from "~/utils/errors";
 import { getUserFromSession } from "~/utils/session.server";
+import { signinSchema, signupSchema } from "~/utils/schema.server";
+import type { SigninActionInput, SignupActionInput } from "~/utils/schema.server";
 
 export default function Auth() {
     return (
@@ -24,26 +25,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 
     return null;
 };
-
-const signinSchema = z.object({
-    email: z.string().min(1, { message: "Email is required" }),
-    password: z.string().min(1, { message: "Password is required" }),
-});
-
-const signupSchema = z
-    .object({
-        name: z.string().min(1, { message: "Name is required" }),
-        email: z.string().min(1, { message: "Email is required" }),
-        password: z.string().min(1, { message: "Password is required" }),
-        repeatPassword: z.string().min(1, { message: "Repeat password is required" }),
-    })
-    .refine((data) => data.password === data.repeatPassword, {
-        message: "Password and repeat password must be same",
-        path: ["repeatPassword"],
-    });
-
-type SigninActionInput = z.TypeOf<typeof signinSchema>;
-type SignupActionInput = z.TypeOf<typeof signupSchema>;
 
 export const action: ActionFunction = async ({ request }) => {
     const searchParams = new URL(request.url).searchParams;
