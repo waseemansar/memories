@@ -7,7 +7,7 @@ const sessionStorage = createCookieSessionStorage({
         secure: process.env.NODE_ENV === "production",
         secrets: [process.env.SESSION_SECRET as string],
         sameSite: "lax",
-        maxAge: 30 * 24 * 60 * 60, // 30 days
+        maxAge: 60 * 60, // 1 hour
         httpOnly: true, // toensure client side JS code cannot access this cookie
     },
 });
