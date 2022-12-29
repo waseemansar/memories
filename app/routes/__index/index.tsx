@@ -10,41 +10,30 @@ import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import invariant from "tiny-invariant";
 
 import PostForm from "~/components/posts/PostForm";
-import PostsGrid from "~/components/posts/Posts";
+import PostsGrid from "~/components/posts/PostsGrid";
 import { createPost, deletePost, getPosts, likePost } from "~/utils/posts.server";
 import { validateAction } from "~/utils/validation.server";
 import { getUserFromSession } from "~/utils/session.server";
-import { useLoaderData } from "@remix-run/react";
 import { postSchema } from "~/utils/schema.server";
 import type { PostActionInput } from "~/utils/schema.server";
 
 const UPLOAD_DIRECTORY = "uploads";
 
 export default function Index() {
-    const data = useLoaderData<typeof loader>();
-
     return (
         <main className="grid grid-cols-7 gap-3 px-4">
             <div className="col-span-7 order-2 sm:col-span-5 sm:order-1 2xl:col-span-5">
                 <PostsGrid />
             </div>
             <div className="col-span-7 order-1 sm:col-span-2 sm:order-2 2xl:col-span-2">
-                {data.user ? (
-                    <PostForm />
-                ) : (
-                    <div className="bg-white shadow-md rounded-md p-4">
-                        <p>Please sign in to create your own memories and like other's memories.</p>
-                    </div>
-                )}
+                <PostForm />
             </div>
         </main>
     );
 }
 
-export const loader: LoaderFunction = async ({ request }) => {
-    const user = await getUserFromSession(request);
-    const posts = await getPosts();
-    return { posts, user };
+export const loader: LoaderFunction = async () => {
+    return await getPosts();
 };
 
 export const action: ActionFunction = async ({ request }) => {

@@ -1,17 +1,17 @@
-import { useFetcher } from "@remix-run/react";
+import { useFetcher, useMatches } from "@remix-run/react";
 import { AiOutlineLike, AiFillLike } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa";
 import moment from "moment";
 import type { PostWithCreator } from "~/types/posts";
-import type { SessionUser } from "~/types/users";
 
 type PostItemProps = {
-    user: SessionUser;
     post: PostWithCreator;
 };
 
-export default function PostItem({ post, user }: PostItemProps) {
+export default function PostItem({ post }: PostItemProps) {
     const fetcher = useFetcher();
+    const matches = useMatches();
+    const user = matches.find((match) => match.id === "routes/__index")?.data;
 
     const formatPostTags = () => {
         const formatedTags = post.tags.map((tag) => "#" + tag);

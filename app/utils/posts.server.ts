@@ -1,5 +1,6 @@
 import type { PostWithCreator } from "~/types/posts";
 import { prisma } from "./database.server";
+import { CustomError } from "./errors";
 import { removeImage } from "./file.server";
 import { cleanTags } from "./helpers.server";
 
@@ -15,7 +16,7 @@ export async function createPost(creatorId: string, title: string, message: stri
             },
         });
     } catch (error) {
-        console.log(error);
+        throw new CustomError("Failed to add post.", 500);
     }
 }
 
@@ -27,7 +28,7 @@ export async function getPosts() {
         });
         return posts;
     } catch (error) {
-        console.log(error);
+        throw new CustomError("Failed to get posts.", 500);
     }
 }
 
@@ -44,7 +45,7 @@ export async function likePost(postId: string, userId: string) {
             await prisma.post.update({ where: { id: postId }, data: { likes: post.likes } });
         }
     } catch (error) {
-        console.log(error);
+        throw new CustomError("Failed to like post.", 500);
     }
 }
 
@@ -58,6 +59,6 @@ export async function deletePost(postId: string) {
             removeImage(deletedPost.selectedFile);
         }
     } catch (error) {
-        console.log(error);
+        throw new CustomError("Failed to delete post.", 500);
     }
 }
