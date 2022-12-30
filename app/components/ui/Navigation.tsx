@@ -14,8 +14,14 @@ const Navigation = () => {
             </Link>
             {user ? (
                 <Menu as="div" className="relative">
-                    <Menu.Button className="w-8 h-8 flex items-center justify-center bg-primary rounded-full text-white font-bold">
-                        {user.name.charAt(0)}
+                    <Menu.Button>
+                        {user.picture ? (
+                            <img src={user.picture} className="w-8 h-8 rounded-full" alt="Profile" />
+                        ) : (
+                            <div className="w-8 h-8 flex items-center justify-center bg-primary rounded-full text-white font-bold">
+                                {user.name.charAt(0)}
+                            </div>
+                        )}
                     </Menu.Button>
                     <Transition
                         as={Fragment}

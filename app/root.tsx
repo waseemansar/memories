@@ -1,5 +1,6 @@
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
-import { Link, Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useCatch } from "@remix-run/react";
+import type { LinksFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
+import { Link, Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useCatch, useLoaderData } from "@remix-run/react";
+import { json } from "@remix-run/node";
 
 import tailwindStyles from "~/styles/tailwind.css";
 import Error from "~/components/ui/Error";
@@ -16,6 +17,8 @@ type DocumentProps = {
 };
 
 function Document({ title, children }: DocumentProps) {
+    const data = useLoaderData<typeof loader>();
+
     return (
         <html lang="en">
             <head>
@@ -26,6 +29,11 @@ function Document({ title, children }: DocumentProps) {
             <body className="p-8">
                 {children}
                 <ScrollRestoration />
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `window.ENV = ${JSON.stringify(data.ENV)}`,
+                    }}
+                />
                 <Scripts />
                 <LiveReload />
             </body>
@@ -78,5 +86,13 @@ export function ErrorBoundary({ error }: { error: Error }) {
         </Document>
     );
 }
+
+export const loader: LoaderFunction = () => {
+    return json({
+        ENV: {
+            GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+        },
+    });
+};
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: tailwindStyles }];

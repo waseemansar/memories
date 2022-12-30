@@ -13,9 +13,9 @@ const sessionStorage = createCookieSessionStorage({
 });
 
 export async function createUserSession(user: User, redirectPath: string) {
-    const { id, name, email } = user;
+    const { id, name, email, picture } = user;
     const session = await sessionStorage.getSession();
-    session.set("user", { id, name, email });
+    session.set("user", { id, name, email, picture });
 
     return redirect(redirectPath, {
         headers: {

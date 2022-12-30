@@ -1,16 +1,30 @@
-import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
+import { Form, Link, useActionData, useFetcher, useSearchParams } from "@remix-run/react";
 import { FaGoogle, FaLock, FaUserPlus } from "react-icons/fa";
 import type { action } from "~/routes/__index/auth";
+import { useGoogleLogin } from "@react-oauth/google";
 
 import ErrorMessage from "../ui/ErrorMessage";
 
 export default function AuthForm() {
+    const fetcher = useFetcher();
     const [searchParams] = useSearchParams();
     const data = useActionData<typeof action>();
 
     const authMode = searchParams.get("mode") || "signin";
     const submitBtnCaption = authMode === "signin" ? "Sign In" : "Sign Up";
     const toggleBtnCaption = authMode === "signin" ? "Don't have an account? Sign Up" : "Already have an account? Sign In";
+
+    const googleSignin = useGoogleLogin({
+        onSuccess: (tokenResponse) => {
+            fetcher.submit(
+                { accessToken: tokenResponse.access_token },
+                {
+                    method: "post",
+                    action: "/auth?mode=google",
+                }
+            );
+        },
+    });
 
     return (
         <div className="w-full md:w-2/4 lg:w-1/4 mx-auto bg-white shadow-md rounded-md p-4">
@@ -73,14 +87,13 @@ export default function AuthForm() {
                     >
                         {submitBtnCaption}
                     </button>
-                    {authMode === "signin" && (
-                        <button
-                            type="button"
-                            className="w-full flex items-center justify-center gap-x-1 bg-primary text-white py-2 rounded-md uppercase font-semibold disabled:cursor-not-allowed disabled:bg-gray-400"
-                        >
-                            <FaGoogle /> Google Sign In
-                        </button>
-                    )}
+                    <button
+                        type="button"
+                        onClick={() => googleSignin()}
+                        className="w-full flex items-center justify-center gap-x-1 bg-primary text-white py-2 rounded-md uppercase font-semibold disabled:cursor-not-allowed disabled:bg-gray-400"
+                    >
+                        <FaGoogle /> {"Google " + submitBtnCaption}
+                    </button>
                     <Link to={authMode === "signin" ? "?mode=signup" : "?mode=signin"} className="w-full text-center">
                         {toggleBtnCaption}
                     </Link>

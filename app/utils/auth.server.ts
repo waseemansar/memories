@@ -5,12 +5,12 @@ import { CustomError } from "./errors";
 import { createUserSession } from "./session.server";
 
 export async function signin(email: string, password: string, redirectTo: string) {
-    const existingUser = await prisma.user.findFirst({ where: { email } });
+    const existingUser = await prisma.user.findFirst({ where: { email, type: "LOCAL" } });
     if (!existingUser) {
         throw new CustomError("Invalid email or password", 401);
     }
 
-    const passwordCorrect = await compare(password, existingUser.password);
+    const passwordCorrect = await compare(password, existingUser.password as string);
     if (!passwordCorrect) {
         throw new CustomError("Invalid email or password", 401);
     }
@@ -19,7 +19,7 @@ export async function signin(email: string, password: string, redirectTo: string
 }
 
 export async function signup(name: string, email: string, password: string) {
-    const existingUser = await prisma.user.findFirst({ where: { email } });
+    const existingUser = await prisma.user.findFirst({ where: { email, type: "LOCAL" } });
     if (existingUser) {
         throw new CustomError("User with given email already exists", 400);
     }
@@ -32,4 +32,14 @@ export async function signup(name: string, email: string, password: string) {
     } catch (error) {
         throw new CustomError("Failed to signup", 500);
     }
+}
+
+export async function googleSignup(name: string, email: string, picture: string, redirectTo: string) {
+    const user = await prisma.user.upsert({
+        where: { userEmailType: { email, type: "GOOGLE" } },
+        update: { name, picture },
+        create: { name, email, picture, type: "GOOGLE" },
+    });
+
+    return createUserSession(user, redirectTo);
 }

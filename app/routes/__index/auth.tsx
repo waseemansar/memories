@@ -1,18 +1,29 @@
 import { json, redirect } from "@remix-run/node";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import AuthForm from "~/components/auth/AuthForm";
 import { validateAction } from "~/utils/validation.server";
-import { signin, signup } from "~/utils/auth.server";
+import { googleSignup, signin, signup } from "~/utils/auth.server";
 import { CustomError } from "~/utils/errors";
 import { getUserFromSession } from "~/utils/session.server";
 import { signinSchema, signupSchema } from "~/utils/schema.server";
 import type { SigninActionInput, SignupActionInput } from "~/utils/schema.server";
+import { useEffect, useState } from "react";
+import type { GoogleUserInfo } from "~/types/users";
 
 export default function Auth() {
+    const [googleClientId, setGoogleClientId] = useState<string>("");
+
+    useEffect(() => {
+        if (window) setGoogleClientId(window.ENV.GOOGLE_CLIENT_ID);
+    }, []);
+
     return (
         <main>
-            <AuthForm />
+            <GoogleOAuthProvider clientId={googleClientId}>
+                <AuthForm />
+            </GoogleOAuthProvider>
         </main>
     );
 }
@@ -54,6 +65,25 @@ export const action: ActionFunction = async ({ request }) => {
         try {
             await signup(name, email, password);
             return redirect("/auth");
+        } catch (error) {
+            if (error instanceof CustomError) {
+                return json({ errors: { credentials: error.message } });
+            }
+        }
+    } else if (authMode === "google") {
+        const formData = await request.formData();
+        const accessToken = formData.get("accessToken") as string;
+
+        const response = await fetch("https://www.googleapis.com/oauth2/v1/userinfo?alt=json", {
+            headers: {
+                Authorization: "Bearer " + accessToken,
+            },
+        });
+
+        const userInfo: GoogleUserInfo = await response.json();
+
+        try {
+            return await googleSignup(userInfo.name, userInfo.email, userInfo.picture, "/");
         } catch (error) {
             if (error instanceof CustomError) {
                 return json({ errors: { credentials: error.message } });
