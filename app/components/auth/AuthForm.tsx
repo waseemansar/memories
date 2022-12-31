@@ -11,7 +11,8 @@ export default function AuthForm() {
     const [searchParams] = useSearchParams();
     const data = useActionData<typeof action>();
 
-    const isSubmiting = Boolean(navigation.submission) || fetcher.state !== "idle";
+    const isSubmiting = Boolean(navigation.submission);
+    const isGoogleSigning = fetcher.state !== "idle";
 
     const authMode = searchParams.get("mode") || "signin";
     const submitBtnCaption = authMode === "signin" ? "Sign In" : "Sign Up";
@@ -94,7 +95,7 @@ export default function AuthForm() {
                     </button>
                     <button
                         type="button"
-                        disabled={isSubmiting}
+                        disabled={isGoogleSigning}
                         onClick={() => googleSignin()}
                         className="w-full flex items-center justify-center gap-x-1 bg-primary text-white py-2 rounded-md uppercase font-semibold disabled:cursor-not-allowed disabled:bg-gray-400"
                     >
