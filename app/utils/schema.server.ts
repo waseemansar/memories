@@ -6,7 +6,7 @@ const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/web
 export const postSchema = z.object({
     title: z.string().min(1, { message: "Title is required" }),
     message: z.string().min(1, { message: "Message is required" }),
-    tags: z.string().regex(/([^,]+)/, { message: "Tags should be comma seprated" }),
+    tags: z.string().min(1, { message: "Tags are required" }),
     selectedFile: z
         .any()
         .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 3MB`)

@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-    --primary-color: #00b7ff;
-}
-
 @layer base {
     html {
         @apply font-Muli;

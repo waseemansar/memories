@@ -1,9 +1,12 @@
 import { Form, useActionData, useMatches, useTransition as useNavigation } from "@remix-run/react";
 import type { action } from "~/routes/__index/index";
+import { TagsInput } from "react-tag-input-component";
+import { useState } from "react";
 
 import ErrorMessage from "../ui/ErrorMessage";
 
 const PostForm = () => {
+    const [tags, setTags] = useState<string[]>([]);
     const data = useActionData<typeof action>();
     const navigation = useNavigation();
     const matches = useMatches();
@@ -40,12 +43,14 @@ const PostForm = () => {
                             <ErrorMessage message={data?.errors?.message} />
                         </div>
                         <div className="mb-4">
-                            <input
-                                className="border w-full px-2 py-3 rounded-md focus:outline-primary"
-                                type="text"
-                                name="tags"
-                                placeholder="Tags (, seperated) *"
+                            <TagsInput
+                                classNames={{ input: "py-1", tag: "bg-primary text-white" }}
+                                value={tags}
+                                onChange={setTags}
+                                beforeAddValidate={(tag) => tag.trim() !== ""}
+                                placeHolder="Tags * (Type and Press Enter)"
                             />
+                            <input type="hidden" value={tags} name="tags" />
                             <ErrorMessage message={data?.errors?.tags} />
                         </div>
                         <div className="mb-4">

@@ -2,6 +2,7 @@ import type { LinksFunction, LoaderFunction, MetaFunction } from "@remix-run/nod
 import { Link, Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useCatch, useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 
+import globalStyles from "~/styles/global.css";
 import tailwindStyles from "~/styles/tailwind.css";
 import Error from "~/components/ui/Error";
 
@@ -95,4 +96,7 @@ export const loader: LoaderFunction = () => {
     });
 };
 
-export const links: LinksFunction = () => [{ rel: "stylesheet", href: tailwindStyles }];
+export const links: LinksFunction = () => [
+    { rel: "stylesheet", href: globalStyles },
+    { rel: "stylesheet", href: tailwindStyles },
+];

@@ -1,1 +1,24 @@
 @import url("https://fonts.googleapis.com/css?family=Muli:200,300,400,500,600,700,800,900&display=swap");
+
+:root {
+    --primary-color: #00b7ff;
+    --input-border-color: #e5e7eb;
+}
+
+.rti--container {
+    border-color: var(--input-border-color) !important;
+    box-shadow: none !important;
+}
+
+.rti--container:focus-within {
+    border-color: var(--primary-color) !important;
+    box-shadow: var(--primary-color) 0 0 0 1px !important;
+}
+
+.rti--tag {
+    background: var(--primary-color) !important;
+}
+
+.rti--tag button:hover {
+    color: white !important;
+}
