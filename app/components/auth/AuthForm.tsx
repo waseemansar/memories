@@ -1,4 +1,4 @@
-import { Form, Link, useActionData, useFetcher, useSearchParams } from "@remix-run/react";
+import { Form, Link, useActionData, useFetcher, useSearchParams, useTransition as useNavigation } from "@remix-run/react";
 import { FaGoogle, FaLock, FaUserPlus } from "react-icons/fa";
 import type { action } from "~/routes/__index/auth";
 import { useGoogleLogin } from "@react-oauth/google";
@@ -7,8 +7,11 @@ import ErrorMessage from "../ui/ErrorMessage";
 
 export default function AuthForm() {
     const fetcher = useFetcher();
+    const navigation = useNavigation();
     const [searchParams] = useSearchParams();
     const data = useActionData<typeof action>();
+
+    const isSubmiting = Boolean(navigation.submission) || fetcher.state !== "idle";
 
     const authMode = searchParams.get("mode") || "signin";
     const submitBtnCaption = authMode === "signin" ? "Sign In" : "Sign Up";
@@ -34,11 +37,12 @@ export default function AuthForm() {
                 </div>
                 <h2 className="text-lg font-semibold">{submitBtnCaption}</h2>
             </div>
-            {data?.errors?.credentials && (
-                <div className="flex justify-center mb-4">
-                    <ErrorMessage message={data?.errors?.credentials} />
-                </div>
-            )}
+            {data?.errors?.credentials ||
+                (fetcher.type === "done" && fetcher.data?.errors?.credentials && (
+                    <div className="flex justify-center mb-4">
+                        <ErrorMessage message={data?.errors?.credentials || fetcher.data?.errors?.credentials} />
+                    </div>
+                ))}
             <Form method="post">
                 {authMode === "signup" && (
                     <div className="mb-4">
@@ -83,12 +87,14 @@ export default function AuthForm() {
                 <div className="flex flex-col gap-2">
                     <button
                         type="submit"
+                        disabled={isSubmiting}
                         className="w-full bg-primary text-white py-2 rounded-md uppercase font-semibold disabled:cursor-not-allowed disabled:bg-gray-400"
                     >
                         {submitBtnCaption}
                     </button>
                     <button
                         type="button"
+                        disabled={isSubmiting}
                         onClick={() => googleSignin()}
                         className="w-full flex items-center justify-center gap-x-1 bg-primary text-white py-2 rounded-md uppercase font-semibold disabled:cursor-not-allowed disabled:bg-gray-400"
                     >

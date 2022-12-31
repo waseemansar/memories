@@ -74,17 +74,21 @@ export const action: ActionFunction = async ({ request }) => {
         const formData = await request.formData();
         const accessToken = formData.get("accessToken") as string;
 
-        const response = await fetch("https://www.googleapis.com/oauth2/v1/userinfo?alt=json", {
+        const response = await fetch(process.env.GOOGLE_USER_INFO_API as string, {
             headers: {
                 Authorization: "Bearer " + accessToken,
             },
         });
 
         const userInfo: GoogleUserInfo = await response.json();
+        if (!userInfo.email) {
+            return json({ errors: { credentials: "Cannot get user info from google" } }, { status: 401 });
+        }
 
         try {
             return await googleSignup(userInfo.name, userInfo.email, userInfo.picture, "/");
         } catch (error) {
+            console.log(error);
             if (error instanceof CustomError) {
                 return json({ errors: { credentials: error.message } });
             }

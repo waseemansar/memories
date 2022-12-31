@@ -30,16 +30,19 @@ export async function signup(name: string, email: string, password: string) {
     try {
         await prisma.user.create({ data: { name, email, password: passwordHash } });
     } catch (error) {
-        throw new CustomError("Failed to signup", 500);
+        throw new CustomError("Failed to signup", 401);
     }
 }
 
 export async function googleSignup(name: string, email: string, picture: string, redirectTo: string) {
-    const user = await prisma.user.upsert({
-        where: { userEmailType: { email, type: "GOOGLE" } },
-        update: { name, picture },
-        create: { name, email, picture, type: "GOOGLE" },
-    });
-
-    return createUserSession(user, redirectTo);
+    try {
+        const user = await prisma.user.upsert({
+            where: { userEmailType: { email, type: "GOOGLE" } },
+            update: { name, picture },
+            create: { name, email, picture, type: "GOOGLE" },
+        });
+        return createUserSession(user, redirectTo);
+    } catch (error) {
+        throw new CustomError("Failed to signup with google", 401);
+    }
 }
