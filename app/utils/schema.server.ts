@@ -5,7 +5,7 @@ const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/web
 
 export const postSchema = z.object({
     title: z.string().min(1, { message: "Title is required" }),
-    message: z.string().min(1, { message: "Message is required" }),
+    message: z.string().min(80, { message: "Message should be at least 80 characters long" }),
     tags: z.string().min(1, { message: "Tags are required" }),
     selectedFile: z
         .any()

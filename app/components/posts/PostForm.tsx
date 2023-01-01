@@ -14,7 +14,7 @@ const PostForm = () => {
     const isSubmiting = Boolean(navigation.submission);
 
     return (
-        <div className="bg-white shadow-md rounded-md p-4">
+        <div className="bg-white shadow-md rounded-md p-4 mb-3">
             {user ? (
                 <>
                     <h2 className="text-center text-lg font-semibold mb-4">Creating a Memory</h2>
