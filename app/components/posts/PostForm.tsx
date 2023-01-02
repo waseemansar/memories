@@ -26,7 +26,7 @@ const PostForm = () => {
                     <Form method="post" encType="multipart/form-data">
                         <div className="mb-4">
                             <input
-                                className="border w-full px-2 py-3 rounded-md focus:outline-primary"
+                                className="border w-full px-2 py-3 rounded-md outline-none focus:border-primary"
                                 type="text"
                                 name="title"
                                 placeholder="Title *"
@@ -35,7 +35,7 @@ const PostForm = () => {
                         </div>
                         <div className="mb-4">
                             <textarea
-                                className="border w-full px-2 py-3 rounded-md focus:outline-primary resize-none"
+                                className="border w-full px-2 py-3 rounded-md outline-none focus:border-primary resize-none"
                                 name="message"
                                 placeholder="Message *"
                                 rows={3}

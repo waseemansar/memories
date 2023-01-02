@@ -48,7 +48,7 @@ export default function AuthForm() {
                 {authMode === "signup" && (
                     <div className="mb-4">
                         <input
-                            className="w-full border px-2 py-3 rounded-md focus:outline-primary"
+                            className="w-full border px-2 py-3 rounded-md outline-none focus:border-primary"
                             type="text"
                             name="name"
                             placeholder="Name *"
@@ -58,7 +58,7 @@ export default function AuthForm() {
                 )}
                 <div className="mb-4">
                     <input
-                        className="border w-full px-2 py-3 rounded-md focus:outline-primary"
+                        className="border w-full px-2 py-3 rounded-md outline-none focus:border-primary"
                         type="text"
                         name="email"
                         placeholder="Email Address *"
@@ -67,7 +67,7 @@ export default function AuthForm() {
                 </div>
                 <div className="mb-4">
                     <input
-                        className="border w-full px-2 py-3 rounded-md focus:outline-primary"
+                        className="border w-full px-2 py-3 rounded-md outline-none focus:border-primary"
                         type="password"
                         name="password"
                         placeholder="Password *"
@@ -77,7 +77,7 @@ export default function AuthForm() {
                 {authMode === "signup" && (
                     <div className="mb-4">
                         <input
-                            className="border w-full px-2 py-3 rounded-md focus:outline-primary"
+                            className="border w-full px-2 py-3 rounded-md outline-none focus:border-primary"
                             type="password"
                             name="repeatPassword"
                             placeholder="Repeat Password *"

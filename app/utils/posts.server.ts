@@ -21,14 +21,28 @@ export async function createPost(creatorId: string, title: string, message: stri
     }
 }
 
-export async function getPosts() {
+export async function getPosts(title: string | null, tags: string | null) {
     try {
-        const posts: PostWithCreator[] = await prisma.post.findMany({
-            orderBy: { createdAt: "desc" },
-            include: { creator: { select: { name: true } } },
-        });
+        let posts: PostWithCreator[];
+
+        if (title?.trim() || tags) {
+            posts = await prisma.post.findMany({
+                where: {
+                    OR: [{ title: { contains: title?.trim() as string, mode: "insensitive" } }, { tags: { hasSome: tags?.split(",") } }],
+                },
+                orderBy: { createdAt: "desc" },
+                include: { creator: { select: { name: true } } },
+            });
+        } else {
+            posts = await prisma.post.findMany({
+                orderBy: { createdAt: "desc" },
+                include: { creator: { select: { name: true } } },
+            });
+        }
+
         return posts;
     } catch (error) {
+        console.log(error);
         throw new CustomError("Failed to get posts.", 500);
     }
 }

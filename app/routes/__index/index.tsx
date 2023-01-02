@@ -17,6 +17,7 @@ import { getUserFromSession } from "~/utils/session.server";
 import { postSchema } from "~/utils/schema.server";
 import type { PostActionInput } from "~/utils/schema.server";
 import { CustomError } from "~/utils/errors";
+import PostSearchForm from "~/components/posts/PostSearchForm";
 
 const UPLOAD_DIRECTORY = "uploads";
 
@@ -27,15 +28,20 @@ export default function Index() {
                 <PostsGrid />
             </div>
             <div className="col-span-7 order-1 sm:col-span-2 sm:order-2 2xl:col-span-2">
+                <PostSearchForm />
                 <PostForm />
             </div>
         </main>
     );
 }
 
-export const loader: LoaderFunction = async () => {
+export const loader: LoaderFunction = async ({ request }) => {
+    const searchParams = new URL(request.url).searchParams;
+    const title = searchParams.get("title");
+    const tags = searchParams.get("tags");
+
     try {
-        const posts = await getPosts();
+        const posts = await getPosts(title, tags);
         return json({ posts });
     } catch (error) {
         if (error instanceof CustomError) {
