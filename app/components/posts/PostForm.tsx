@@ -1,17 +1,23 @@
 import { Form, useActionData, useMatches, useTransition as useNavigation } from "@remix-run/react";
 import type { action } from "~/routes/__index/index";
 import { TagsInput } from "react-tag-input-component";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import ErrorMessage from "../ui/ErrorMessage";
 
 const PostForm = () => {
     const [tags, setTags] = useState<string[]>([]);
+    const formRef = useRef<HTMLFormElement>(null);
     const data = useActionData<typeof action>();
     const navigation = useNavigation();
     const matches = useMatches();
     const user = matches.find((match) => match.id === "routes/__index")?.data;
     const isSubmiting = Boolean(navigation.submission);
+
+    function clearHandler() {
+        formRef.current?.reset();
+        setTags([]);
+    }
 
     return (
         <div className="bg-white shadow-md rounded-md p-4 mb-3">
@@ -23,7 +29,7 @@ const PostForm = () => {
                             <ErrorMessage message={data?.errors?.error} />
                         </div>
                     )}
-                    <Form method="post" encType="multipart/form-data">
+                    <Form ref={formRef} method="post" encType="multipart/form-data">
                         <div className="mb-4">
                             <input
                                 className="border w-full px-2 py-3 rounded-md outline-none focus:border-primary"
@@ -65,7 +71,11 @@ const PostForm = () => {
                             >
                                 Submit
                             </button>
-                            <button type="button" className="bg-rose-500 text-white py-2 rounded-md uppercase font-semibold">
+                            <button
+                                type="button"
+                                onClick={clearHandler}
+                                className="bg-rose-500 text-white py-2 rounded-md uppercase font-semibold"
+                            >
                                 Clear
                             </button>
                         </div>
