@@ -1,10 +1,33 @@
 const posts = [
     {
+        title: "London Eye",
+        message: "Elegantly rotating and feel the exhilaration as you rise up over the River Thames.",
+        creator: "Waseem Malik",
+        tags: ["londoneye", "london", "uk"],
+        selectedFile: "/uploads/london-eye.jpg",
+    },
+    {
+        title: "Taj Mahal",
+        message:
+            "The Taj Mahal is an Islamic ivory-white marble mausoleum on the right bank of the river Yamuna in the Indian city of Agra.",
+        creator: "Waseem Malik",
+        tags: ["tajmahal", "agra", "india"],
+        selectedFile: "/uploads/taj-mahal.jpg",
+    },
+    {
         title: "Quad Biking",
         message: "We live for the thrill of the ride. Follow your free spirit, wherever it leads.",
         creator: "Waseem Malik",
         tags: ["quadbiking", "desert", "dubai"],
         selectedFile: "/uploads/quad-bike.jpg",
+    },
+    {
+        title: "Times Square",
+        message:
+            "Times Square, square in Midtown Manhattan, New York City, formed by the intersection of Seventh Avenue, 42nd Street, and Broadway.",
+        creator: "Waseem Malik",
+        tags: ["timessquare", "newyork", "usa"],
+        selectedFile: "/uploads/times-square.jpg",
     },
     {
         title: "BBQ Night",
@@ -43,6 +66,20 @@ const posts = [
         creator: "Waseem Ansar",
         tags: ["burjkhalifa", "dubai", "uae"],
         selectedFile: "/uploads/burj-khalifa.jpg",
+    },
+    {
+        title: "Egyptian Pyramids",
+        message: "The Egyptian pyramids are ancient masonry structures located in Egypt.",
+        creator: "Waseem Ansar",
+        tags: ["pyramids", "cairo", "egypt"],
+        selectedFile: "/uploads/pyramids.jpg",
+    },
+    {
+        title: "Eiffel Tower",
+        message: "The Eiffel Tower or as the French call it, La Tour Eiffel is one of the world's most recognizable landmarks.",
+        creator: "Waseem Ansar",
+        tags: ["eiffeltower", "paris", "france"],
+        selectedFile: "/uploads/eiffel-tower.jpg",
     },
     {
         title: "Birthday Party",
