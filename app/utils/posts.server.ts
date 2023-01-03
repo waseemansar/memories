@@ -21,24 +21,36 @@ export async function createPost(creatorId: string, title: string, message: stri
     }
 }
 
-export async function getPosts(title: string | null, tags: string | null) {
+export async function getPosts(page: number | null) {
     try {
-        let posts: PostWithCreator[];
+        page = page || 1;
+        const LIMIT = 10;
+        const startIndex = (page - 1) * LIMIT;
+        const total = await prisma.post.count();
 
-        if (title?.trim() || tags) {
-            posts = await prisma.post.findMany({
-                where: {
-                    OR: [{ title: { contains: title?.trim() as string, mode: "insensitive" } }, { tags: { hasSome: tags?.split(",") } }],
-                },
-                orderBy: { createdAt: "desc" },
-                include: { creator: { select: { name: true } } },
-            });
-        } else {
-            posts = await prisma.post.findMany({
-                orderBy: { createdAt: "desc" },
-                include: { creator: { select: { name: true } } },
-            });
-        }
+        const posts: PostWithCreator[] = await prisma.post.findMany({
+            skip: startIndex,
+            take: LIMIT,
+            orderBy: { id: "desc" },
+            include: { creator: { select: { name: true } } },
+        });
+
+        return { posts, currentPage: page, numberofPages: Math.ceil(total / LIMIT) };
+    } catch (error) {
+        console.log(error);
+        throw new CustomError("Failed to get posts.", 500);
+    }
+}
+
+export async function searchPosts(title: string, tags: string) {
+    try {
+        let posts: PostWithCreator[] = await prisma.post.findMany({
+            where: {
+                OR: [{ title: { contains: title.trim() as string, mode: "insensitive" } }, { tags: { hasSome: tags.split(",") } }],
+            },
+            orderBy: { id: "desc" },
+            include: { creator: { select: { name: true } } },
+        });
 
         return posts;
     } catch (error) {

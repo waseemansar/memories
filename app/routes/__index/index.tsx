@@ -11,17 +11,21 @@ import invariant from "tiny-invariant";
 
 import PostForm from "~/components/posts/PostForm";
 import PostsGrid from "~/components/posts/PostsGrid";
-import { createPost, deletePost, getPosts, likePost } from "~/utils/posts.server";
+import { createPost, deletePost, getPosts, likePost, searchPosts } from "~/utils/posts.server";
 import { validateAction } from "~/utils/validation.server";
 import { getUserFromSession } from "~/utils/session.server";
 import { postSchema } from "~/utils/schema.server";
 import type { PostActionInput } from "~/utils/schema.server";
 import { CustomError } from "~/utils/errors";
 import PostSearchForm from "~/components/posts/PostSearchForm";
+import Pagination from "~/components/posts/Pagination";
+import { useLoaderData } from "@remix-run/react";
 
 const UPLOAD_DIRECTORY = "uploads";
 
 export default function Index() {
+    const data = useLoaderData<typeof loader>();
+
     return (
         <main className="grid grid-cols-7 gap-3 px-4">
             <div className="col-span-7 order-2 sm:col-span-5 sm:order-1 2xl:col-span-5">
@@ -30,6 +34,7 @@ export default function Index() {
             <div className="col-span-7 order-1 sm:col-span-2 sm:order-2 2xl:col-span-2">
                 <PostSearchForm />
                 <PostForm />
+                {data.pagination && <Pagination />}
             </div>
         </main>
     );
@@ -37,12 +42,18 @@ export default function Index() {
 
 export const loader: LoaderFunction = async ({ request }) => {
     const searchParams = new URL(request.url).searchParams;
-    const title = searchParams.get("title");
-    const tags = searchParams.get("tags");
+    const page = searchParams.get("page");
+    const title = searchParams.get("title") as string;
+    const tags = searchParams.get("tags") as string;
 
     try {
-        const posts = await getPosts(title, tags);
-        return json({ posts });
+        if (title || tags) {
+            const posts = await searchPosts(title, tags);
+            return json({ posts, pagination: false });
+        } else {
+            const data = await getPosts(Number(page));
+            return json({ ...data, pagination: true });
+        }
     } catch (error) {
         if (error instanceof CustomError) {
             return json({ errors: { error: error.message } });
