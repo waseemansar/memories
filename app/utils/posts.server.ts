@@ -24,7 +24,7 @@ export async function createPost(creatorId: string, title: string, message: stri
 export async function getPosts(page: number | null) {
     try {
         page = page || 1;
-        const LIMIT = 10;
+        const LIMIT = 9;
         const startIndex = (page - 1) * LIMIT;
         const total = await prisma.post.count();
 
